@@ -1,0 +1,91 @@
+<html>
+    <head>
+        <?php include 'process.php';?>
+    </head>
+
+    <body>
+        <form>
+        <h1>Register</h1>
+        <div>
+        <input type="text" placeholder="Username" id="username" >
+        </div>
+        
+        <div>
+        <input type="email" placeholder="Email" id="email">
+        <span id="msg"></span>
+        </div>
+        <div>
+        <input type="password" placeholder="Password" id="password">
+        </div>
+        
+        <div>
+        <button type="button" id="reg">Register</button>
+        </div>
+        <div id="error_msg"></div>
+        </form>
+    </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$('document').ready(function(){
+var email_state = false;
+
+$('#email').blur(function () {
+var emailAdd = $('#email').val();
+if (emailAdd == ''){
+email_state = false;
+return;
+}
+$.ajax({
+url:'process.php',
+type: 'post',
+data:{
+'email_check' : 1,
+'email' : emailAdd,
+},
+success: function (response) {
+if (response == 'not_available' ) {
+email_state = false;
+$('#msg').text("Email already exist! !");
+}else if (response == 'available') {
+email_state = true;
+$('#msg').text("available");
+  }
+ }
+});
+});
+
+$('#reg').click(function(){
+var user_name = $('#username').val();
+var emailAdd = $('#email').val();
+var pass_word = $ ('#password').val();
+if (email_state == false) {
+$ ('#error_msg').text('Fix the errors first');
+
+}else{
+$('#error_msg').text("");
+// proceed with form submission
+$.ajax ({
+url: 'process.php',
+type: 'post',
+
+data: {
+'save' : 1,
+'email' : emailAdd,
+'username' : user_name,
+'password' : pass_word,
+},
+success: function (response) {
+alert (response) ;
+$ ('#username').val('');
+$ ('#email').val('');
+$ ('#password').val('') ;
+}
+});
+}
+});
+});
+
+</script>
+      
+</html>
